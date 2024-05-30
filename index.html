@@ -11,12 +11,8 @@
 </head>
 <body>
   <div class="calorie-counter">
-    <h2 class="text-center">Daily Calorie Counter</h2>
+    <div id="remaining-calories" class="text-center">Remaining Calories: <span id="remaining-calories-value">1700</span></div>
     <form>
-      <div class="mb-3">
-        <label for="calories" class="form-label">Enter your daily calorie goal:</label>
-        <input type="number" class="form-control" id="calories" value="2000" />
-      </div>
       <div class="mb-3">
         <label for="name" class="form-label">Enter your name:</label>
         <input type="text" class="form-control" id="name" />
@@ -28,14 +24,6 @@
       <button id="add-entry" type="button" class="btn btn-primary">Add Entry</button>
       <p id="result" class="text-center"></p>
       <table id="entries" class="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Calorie Amount</th>
-            <th>Remaining Calories</th>
-            <th>Action</th>
-          </tr>
-        </thead>
         <tbody id="entry-list">
         </tbody>
       </table>
