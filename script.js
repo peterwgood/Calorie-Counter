@@ -21,6 +21,7 @@ addEntryButton.addEventListener("click", () => {
   const calorieAmount = parseInt(calorieAmountInput.value.trim());
   if (name && calorieAmount) {
     remainingCalories -= calorieAmount;
+    remainingCaloriesElement.textContent = remainingCalories; // Update remaining calories display
     const entryHTML = `
       <tr>
         <td>${name} - ${calorieAmount}</td>
