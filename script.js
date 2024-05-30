@@ -4,6 +4,7 @@ const addEntryButton = document.getElementById("add-entry");
 const resultElement = document.getElementById("result");
 const entryListElement = document.getElementById("entry-list");
 const remainingCaloriesElement = document.getElementById("remaining-calories-value");
+const resetButton = document.getElementById("reset-button"); // Get the reset button element
 let remainingCalories = 1700;
 let entries = [];
 
@@ -60,6 +61,15 @@ entryListElement.addEventListener("click", (event) => {
       localStorage.setItem("calorie-counter-data", jsonData);
     }
   }
+});
+
+resetButton.addEventListener("click", () => { // Add event listener to reset button
+  remainingCalories = 1700;
+  entries = [];
+  remainingCaloriesElement.textContent = remainingCalories; // Update remaining calories display
+  entryListElement.innerHTML = ""; // Clear entry list
+  localStorage.removeItem("calorie-counter-data"); // Remove data from local storage
+  localStorage.removeItem("calorie-counter-data-expiration"); // Remove expiration time from local storage
 });
 
 function renderEntryList() {
