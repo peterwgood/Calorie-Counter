@@ -7,19 +7,12 @@ const remainingCaloriesElement = document.getElementById("remaining-calories-val
 let remainingCalories = 1700;
 let entries = [];
 
-// Store data in sessionStorage
-sessionStorage.setItem('remainingCalories', remainingCalories);
-sessionStorage.setItem('entries', JSON.stringify(entries));
-
-// Retrieve data from sessionStorage
-const storedRemainingCalories = sessionStorage.getItem('remainingCalories');
-if (storedRemainingCalories) {
-  remainingCalories = parseInt(storedRemainingCalories);
-  remainingCaloriesElement.textContent = remainingCalories;
-}
-const storedEntries = sessionStorage.getItem('entries');
-if (storedEntries) {
-  entries = JSON.parse(storedEntries);
+// Retrieve data from local storage
+const storedData = localStorage.getItem("calorie-counter-data");
+if (storedData) {
+  const { remainingCalories: storedRemainingCalories, entries: storedEntries } = JSON.parse(storedData);
+  remainingCalories = storedRemainingCalories;
+  entries = storedEntries;
   renderEntryList();
 }
 
@@ -28,7 +21,6 @@ addEntryButton.addEventListener("click", () => {
   const calorieAmount = parseInt(calorieAmountInput.value.trim());
   if (name && calorieAmount) {
     remainingCalories -= calorieAmount;
-    remainingCaloriesElement.textContent = remainingCalories;
     const entryHTML = `
       <tr>
         <td>${name} - ${calorieAmount}</td>
@@ -37,9 +29,12 @@ addEntryButton.addEventListener("click", () => {
     `;
     entryListElement.insertAdjacentHTML("beforeend", entryHTML);
     entries.push({ name, calorieAmount });
-    // Store updated data in sessionStorage
-    sessionStorage.setItem('remainingCalories', remainingCalories);
-    sessionStorage.setItem('entries', JSON.stringify(entries));
+    // Save data to local storage for 24 hours
+    const dataToSave = { remainingCalories, entries };
+    const jsonData = JSON.stringify(dataToSave);
+    localStorage.setItem("calorie-counter-data", jsonData);
+    const expirationTime = new Date(Date.now() + 86400000); // 86400000ms = 24 hours
+    localStorage.setItem("calorie-counter-data-expiration", expirationTime.getTime().toString());
     // Clear both fields
     nameInput.value = "";
     calorieAmountInput.value = "";
@@ -57,9 +52,10 @@ entryListElement.addEventListener("click", (event) => {
       remainingCalories += entry.calorieAmount;
       remainingCaloriesElement.textContent = remainingCalories;
       rowElement.remove();
-      // Store updated data in sessionStorage
-      sessionStorage.setItem('remainingCalories', remainingCalories);
-      sessionStorage.setItem('entries', JSON.stringify(entries));
+      // Save updated data to local storage
+      const dataToSave = { remainingCalories, entries };
+      const jsonData = JSON.stringify(dataToSave);
+      localStorage.setItem("calorie-counter-data", jsonData);
     }
   }
 });
@@ -76,3 +72,15 @@ function renderEntryList() {
     entryListElement.insertAdjacentHTML("beforeend", entryHTML);
   });
 }
+
+// Clear local storage data after 24 hours
+setInterval(() => {
+  const expirationTime = localStorage.getItem("calorie-counter-data-expiration");
+  if (expirationTime) {
+    const currentTime = new Date().getTime();
+    if (currentTime > parseInt(expirationTime)) {
+      localStorage.removeItem("calorie-counter-data");
+      localStorage.removeItem("calorie-counter-data-expiration");
+    }
+  }
+}, 86400000); // 86400000ms = 24 hours
