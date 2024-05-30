@@ -14,6 +14,7 @@ if (storedData) {
   remainingCalories = storedRemainingCalories;
   entries = storedEntries;
   renderEntryList();
+  remainingCaloriesElement.textContent = remainingCalories; // Update remaining calories display
 }
 
 addEntryButton.addEventListener("click", () => {
